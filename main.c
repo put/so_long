@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mschippe <mschippe@student.codam.nl>       +#+  +:+       +#+        */
+/*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/06 03:02:11 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:43:22 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-#include "maps.h"
 
-int main(void)
+int main(void) // TODO: Add ft_printf to the project to replace printf
 {
 	char *rawmap;
 	char **map;
@@ -42,4 +41,10 @@ int main(void)
 	}
 	else
 		printf("ERROR: Map is NOT rectangular!\n");
+	t_map *goodmap = create_map(map, width, height);
+	if (goodmap)
+		printf("Map created successfully\n");
+	else
+		printf("ERROR: Map creation failed\n");
+	print_map(goodmap);
 }
