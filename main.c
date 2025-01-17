@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/16 19:43:22 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/17 20:20:59 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int main(void) // TODO: Add ft_printf to the project to replace printf
 	int height;
 	int collectibles_count;
 
-	rawmap = "11111\n1PCE1\n11111";
+	rawmap = "1111111111\n1000000001\n10P0000C01\n1000000001\n1000000001\n1000000001\n1000000001\n1C0000C001\n10000000E1\n1111111111";
 	width = getmapwidth(rawmap);
 	height = getmapheight(rawmap);
 	printf("Map size is %i by %i\n", width, height);
@@ -47,4 +47,12 @@ int main(void) // TODO: Add ft_printf to the project to replace printf
 	else
 		printf("ERROR: Map creation failed\n");
 	print_map(goodmap);
+	t_list *queue = floodfill(goodmap, (t_tile){1, 1, MAP_START, FALSE});
+
+	while (queue)
+	{
+		t_tile *current = (t_tile *)queue->content;
+		printf("Visited tile at %i, %i\n", current->x, current->y);
+		queue = queue->next;
+	}
 }

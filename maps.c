@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:32:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/16 19:43:23 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/17 16:32:13 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ t_map	*create_map(char **splitmap, int width, int height)
 	return (map);
 }
 
+// Visualizes the map in stdout!
 void	print_map(t_map *map) // TODO: Delete before handing in, debug only
 {
 	int	i;

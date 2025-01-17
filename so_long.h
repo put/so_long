@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/16 19:43:22 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/17 20:11:07 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,5 @@ t_bool	in_bounds(t_map map, t_tile coord);
 char	*read_file_to_string(const char *filename);
 t_map	*create_map(char **splitmap, int width, int height);
 void	print_map(t_map *map);
+t_list	*floodfill(t_map *map, t_tile start);
 #endif
