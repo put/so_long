@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/17 20:11:07 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/22 20:15:33 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,23 +45,7 @@ typedef struct t_tile
 				// Y coordinate of the tile
 	int			y;
 				// The type of tile this is
-	t_tiletype	tile;
-				// Whether this tile has been visited (map validation)
-	t_bool		visited;
 }	t_tile;
-
-// Holds the map data
-typedef struct t_map
-{
-			// 2D array of map tiles
-	t_tile	**map;
-			// Width of the map
-	int		width;
-			// Height of the map
-	int		height;
-			// The amount of collectibles that are inside the map
-	int		collectibles_count;
-}	t_map;
 
 // Holds the direction the player is moving
 typedef enum e_direction
@@ -78,9 +62,6 @@ char	**getsplitmap(char *rawmap);
 t_bool	verifyrect(char *rawmap, int width);
 t_bool	verifywalls(char **map, int width);
 t_bool	verifyobjects(char *rawmap);
-t_bool	in_bounds(t_map map, t_tile coord);
-char	*read_file_to_string(const char *filename);
-t_map	*create_map(char **splitmap, int width, int height);
-void	print_map(t_map *map);
-t_list	*floodfill(t_map *map, t_tile start);
+void	print_map(char **map, int height, int width);
+char	*floodfill(char *raw, char **map, int start_x, int start_y);
 #endif

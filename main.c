@@ -6,13 +6,15 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/17 20:20:59 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/23 21:58:28 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+#include "minilibx-linux/mlx.h"
+#include "mlx_manage.h"
 
-int main(void) // TODO: Add ft_printf to the project to replace printf
+int main_1(void) // TODO: Add ft_printf to the project to replace printf
 {
 	char *rawmap;
 	char **map;
@@ -20,7 +22,7 @@ int main(void) // TODO: Add ft_printf to the project to replace printf
 	int height;
 	int collectibles_count;
 
-	rawmap = "1111111111\n1000000001\n10P0000C01\n1000000001\n1000000001\n1000000001\n1000000001\n1C0000C001\n10000000E1\n1111111111";
+	rawmap = "1111111111\n1C00100001\n10P0101101\n10001C1E01\n1001111001\n1010000001\n101C111001\n1011100001\n10000000C1\n1111111111";
 	width = getmapwidth(rawmap);
 	height = getmapheight(rawmap);
 	printf("Map size is %i by %i\n", width, height);
@@ -41,18 +43,47 @@ int main(void) // TODO: Add ft_printf to the project to replace printf
 	}
 	else
 		printf("ERROR: Map is NOT rectangular!\n");
-	t_map *goodmap = create_map(map, width, height);
-	if (goodmap)
-		printf("Map created successfully\n");
-	else
-		printf("ERROR: Map creation failed\n");
-	print_map(goodmap);
-	t_list *queue = floodfill(goodmap, (t_tile){1, 1, MAP_START, FALSE});
+	print_map(map, height, width);
+	floodfill(rawmap, map, 2, 2);
+	printf("-----------------\n");
+	print_map(map, height, width);
+}
 
-	while (queue)
+void* getmlx(void)
+{
+	static void *mlx = NULL;
+	if (!mlx)
+		mlx = mlx_init();
+	if (!mlx)
 	{
-		t_tile *current = (t_tile *)queue->content;
-		printf("Visited tile at %i, %i\n", current->x, current->y);
-		queue = queue->next;
+		perror("ERROR: mlx_init() failed\n");
+		exit(1);
 	}
+	return (mlx);
+}
+
+int handle_keypress(int keycode, void *param)
+{
+    void **win = (void **)param;
+
+    if (keycode == KEY_ESC)
+    {
+        mlx_destroy_window(getmlx(), *win);
+        exit(0);
+    }
+	else
+		printf("Keycode: %i\n", keycode);
+    return (0);
+}
+
+
+int main(void)
+{
+    void *win;
+    win = mlx_new_window(getmlx(), 800, 600, "My Window");
+	int imgsize = 16;
+	mlx_key_hook(win, handle_keypress, &win);
+	mlx_put_image_to_window(getmlx(), win, mlx_xpm_file_to_image(getmlx(), "wall.xpm", &imgsize, &imgsize), 0, 0);
+    mlx_loop(getmlx());
+    return 0;
 }

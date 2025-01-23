@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:32:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/17 16:32:13 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/22 20:11:30 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,83 +122,18 @@ t_bool	verifyobjects(char *rawmap)
 	return (collectibles > 0 && exits == 1 && player == 1);
 }
 
-// Verifies that a given coordinate is within the bounds of the map
-t_bool	in_bounds(t_map map, t_tile coord)
-{
-	return (coord.x >= 0 && coord.x < map.width
-		&& coord.y >= 0 && coord.y < map.height);
-}
-
-// Initializes the map tiles within the given map
-int	init_map_tiles(t_map **map, char **smap, int width, int height)
-{
-	int	i;
-	int	j;
-	int	allocs;
-
-	i = 0;
-	j = 0;
-	allocs = 0;
-	while (allocs < (*map)->height)
-	{
-		(*map)->map[allocs] = (t_tile *)malloc(sizeof(t_tile) * (*map)->width);
-		if (!(*map)->map[allocs])
-			return (allocs);
-		allocs++;
-	}
-	while (j < (*map)->height)
-	{
-		i = 0;
-		while (i < (*map)->width)
-		{
-			(*map)->map[j][i] = (t_tile){i, j, (t_tiletype)smap[j][i], 0};
-			i++;
-		}
-		j++;
-	}
-	return (allocs);
-}
-
-// Creates a complete map struct from a split map
-// Still needs a free_map function to free the map
-t_map	*create_map(char **splitmap, int width, int height)
-{
-	t_map	*map;
-	int		goodmallocs;
-
-	map = malloc(sizeof(t_map));
-	if (!map)
-		return (NULL);
-	goodmallocs = 0;
-	map->width = width;
-	map->height = height;
-	map->map = (t_tile **)malloc(sizeof(t_tile *) * map->height);
-	if (!map->map)
-		return (free(map), NULL);
-	goodmallocs = init_map_tiles(&map, splitmap, width, height);
-	if (goodmallocs < map->height)
-	{
-		while (goodmallocs >= 0)
-			free(map->map[goodmallocs--]);
-		free(map->map);
-		free(map);
-		return (NULL);
-	}
-	return (map);
-}
-
 // Visualizes the map in stdout!
-void	print_map(t_map *map) // TODO: Delete before handing in, debug only
+void	print_map(char **map, int height, int width) // TODO: Delete before handing in, debug only
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < map->height)
+	while (i < height)
 	{
 		j = 0;
-		while (j < map->width)
-			printf("%c", map->map[i][j++].tile);
+		while (j < width)
+			printf("%c", map[i][j++]);
 		printf("\n");
 		i++;
 	}
