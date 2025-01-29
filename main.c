@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/29 22:20:27 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 00:00:26 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,61 +128,6 @@ static void handle_keypress(void *param)
 		do_movement(RIGHT);
 }
 
-// static void set_textures(mlx_texture_t **textures)
-// {
-// 	textures[0] = mlx_load_png("gfx/wall.png");
-// 	textures[1] = mlx_load_png("gfx/floor.png");
-// 	textures[2] = mlx_load_png("gfx/collectible.png");
-// 	textures[3] = mlx_load_png("gfx/exit.png");
-// 	textures[4] = mlx_load_png("gfx/player.png");
-// 	textures[5] = mlx_load_png("gfx/error.png");
-// } // TODO: Might remove
-
-static mlx_image_t **get_images(mlx_t *mlx)
-{
-    static mlx_image_t **images = NULL;
-    static mlx_texture_t *textures[6] = {NULL};
-    int counter;
-
-	counter = 0;
-    if (images == NULL)
-    {
-        images = malloc(sizeof(mlx_image_t *) * 6);
-        if (images == NULL)
-            return (NULL);
-		textures[0] = mlx_load_png("gfx/wall.png");
-		textures[1] = mlx_load_png("gfx/floor.png");
-		textures[2] = mlx_load_png("gfx/collectible.png");
-		textures[3] = mlx_load_png("gfx/exit.png");
-		textures[4] = mlx_load_png("gfx/player.png");
-		textures[5] = mlx_load_png("gfx/error.png");
-        while (counter < 6)
-        {
-            images[counter] = mlx_texture_to_image(mlx, textures[counter]);
-            if (images[counter] == NULL)
-                return (free(images), NULL);
-			counter++;
-        }
-    }
-    return (images);
-}
-
-static void draw_tile(mlx_t *mlx, t_imgtype type, int x, int y)
-{
-    mlx_image_t **images;
-    mlx_image_t *img;
-
-    images = get_images(mlx);
-    if (images == NULL)
-    {
-        perror("ERROR: get_images() failed\n");
-        return;
-    }
-
-    img = images[type];
-    mlx_image_to_window(mlx, img, x * 32, y * 32);
-}
-
 static t_imgtype get_tiletype(char c)
 {
 	if (c == '1')
@@ -196,49 +141,6 @@ static t_imgtype get_tiletype(char c)
 	if (c == 'P')
 		return (IMG_FLOOR);
 	return (IMG_ERROR);
-}
-static void draw_objects(mlx_t *mlx, char **map)
-{
-	int x;
-	int y;
-
-	y = 0;
-	while (map[y] != NULL)
-	{
-		x = 0;
-		while (map[y][x] != '\0')
-		{
-			if (map[y][x] == 'C')
-				draw_tile(mlx, IMG_COLLECT, x, y);
-			if (map[y][x] == 'P')
-				draw_tile(mlx, IMG_PLAYER, x, y);
-			x++;
-		}
-		y++;
-	}
-}
-
-static void draw_map(void *param)
-{
-	int x;
-	int y;
-	char **map;
-	mlx_t *mlx;
-
-	mlx = (mlx_t *)param;
-	y = 0;
-	map = *getsetmap(NULL, FALSE);
-	while (map[y] != NULL)
-	{
-		x = 0;
-		while (map[y][x] != '\0')
-		{
-			draw_tile(mlx, get_tiletype(map[y][x]), x, y);
-			x++;
-		}
-		y++;
-	}
-	draw_objects(mlx, map);
 }
 
 void update_game(void* param)
@@ -357,6 +259,77 @@ char *get_map_err(int err)
 	if (err == -22)
 		return ("Map has invalid amount of players");
 	return ("Unknown error");
+}
+
+static bool set_textures(mlx_texture_t **textures)
+{
+	int i;
+	int j;
+
+	i = 0;
+	textures[IMG_WALL] = mlx_load_png("gfx/wall.png");
+	textures[IMG_FLOOR] = mlx_load_png("gfx/floor.png");
+	textures[IMG_COLLECT] = mlx_load_png("gfx/collect.png");
+	textures[IMG_EXIT] = mlx_load_png("gfx/exit.png");
+	textures[IMG_PLAYER] = mlx_load_png("gfx/player.png");
+	textures[IMG_ERROR] = mlx_load_png("gfx/error.png");
+	while (i < 6)
+	{
+		j = 0;
+		if (textures[i] == NULL)
+		{
+			while (j < i)
+				mlx_delete_texture(textures[j++]);
+			return (false);
+		}
+		i++;
+	}
+	return (true);
+}
+
+static mlx_texture_t **gettextures(void)
+{
+	static mlx_texture_t **textures = NULL;
+	if (!textures)
+	{
+		textures = malloc(sizeof(mlx_texture_t *) * 6);
+		if (!textures)
+			return (NULL);
+		if (!set_textures(textures))
+			return (free(textures), NULL);
+	}
+	return (textures);
+}
+
+static void deletetextures(void)
+{
+	mlx_texture_t **textures;
+	int i;
+
+	textures = gettextures();
+	i = 0;
+	if (!textures)
+		return;
+	while (i < 6)
+	{
+		if (textures[i] != NULL)
+			mlx_delete_texture(textures[i++]);
+	}
+	free(textures);
+}
+
+static mlx_image_t **getmapimgs(char **map, mlx_t *mlx)
+{
+	// create image for each tile in map
+	// set image to correct texture
+	// return array of images
+	// we make static and return so we can call it again later and free them
+	// will also be used by a separate draw map function that we only need to use once
+
+	// next step is a draw_objects function that creates 1 image for each object and the player
+	// and then if player moves, change the x/y of the image rather than redrawing
+	// this will reveal the tile below where the player currently was so no redraw ther either? supposedly
+	// if collectible is collected, set the image for it to enabled=false I guess?
 }
 
 int start_game(void)
