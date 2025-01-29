@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/29 19:10:12 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/29 19:31:06 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,31 @@ static t_tile *getplayerloc(char **map)
 	return (loc);
 }
 
+void update_game(void* param)
+{
+	mlx_t *mlx;
+	char **map;
+	static t_tile *loc = NULL;
+	t_tile *newloc;
+	
+	mlx = (mlx_t *)param;
+	map = *getsetmap(NULL, FALSE);
+	if (!loc)
+	{
+		loc = getplayerloc(map);
+		draw_map(mlx);
+		return;
+	}
+	//TODO: ^^^^^^get player loc can fail, must init kill game to free shit and error out etcetc
+	newloc = getplayerloc(map);
+	//TODO: ^^^^^^get player loc can fail, must init kill game to free shit and error out etcetc
+	if (loc->x == newloc->x && loc->y == newloc->y)
+		return;
+	map[loc->y][loc->x] = '0';
+	map[newloc->y][newloc->x] = 'P';
+	draw_map(mlx);
+}
+
 static t_bool floodsuccess(char **map)
 {
 	int x;
@@ -283,7 +308,7 @@ int start_game(void)
 	if (mlx == NULL)
 		return (errormsg("Failed to initialize MLX"), -1);
 	mlx_loop_hook(mlx, &handle_keypress, mlx);
-	mlx_loop_hook(mlx, &draw_map, mlx);
+	mlx_loop_hook(mlx, &update_game, mlx);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
 	return (0);
