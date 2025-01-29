@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:32:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/22 20:11:30 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/29 18:39:05 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_bool	verifywalls(char **map, int width)
 }
 
 // Verifies that the map has at least one collectible, one exit, and one player
-t_bool	verifyobjects(char *rawmap)
+int	verifyobjects(char *rawmap)
 {
 	int	collectibles;
 	int	exits;
@@ -119,7 +119,13 @@ t_bool	verifyobjects(char *rawmap)
 			player++;
 		x++;
 	}
-	return (collectibles > 0 && exits == 1 && player == 1);
+	if (collectibles <= 0)
+		return (-20);
+	if (exits != 1)
+		return (-21);
+	if (player != 1)
+		return (-22);
+	return (1);
 }
 
 // Visualizes the map in stdout!

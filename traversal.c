@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 13:45:17 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/22 20:15:11 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/29 17:53:13 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,37 +29,78 @@ t_list *ft_lstpop(t_list **queue)
 	return (tmp);
 }
 
-char *floodfill(char *raw, char **map, int start_x, int start_y)
+int sideval(int index, t_bool is_dx)
 {
-    int width;
-    int height;
+	if (is_dx)
+	{
+		if (index == 0)
+			return (1);
+		if (index == 1)
+			return (-1);
+	}
+	else
+	{
+		if (index == 2)
+			return (1);
+		if (index == 3)
+			return (-1);
+	}
+	return (0);
+}
+
+t_bool should_skip(char **map, int x, int y, int width, int height)
+{
+	return (x < 0 || x >= width || y < 0 || y >= height ||
+			map[y][x] == '1' || map[y][x] == '2');
+}
+
+t_tile *maketile(int x, int y)
+{
+	t_tile *tile;
+
+	tile = malloc(sizeof(t_tile));
+	if (!tile)
+		return (NULL);
+	*tile = (t_tile){x, y};
+	return (tile);
+}
+
+int add_all_to_queue(t_list **queue, t_tile *c)
+{
+	t_tile *next;
+	int i;
+
+	i = 0;
+	while (i < 4)
+	{
+		next = maketile(c->x + sideval(i, 1), c->y + sideval(i, 0));
+		if (!next)
+			return 0;
+		ft_lstadd_back(queue, ft_lstnew(next));
+		i++;
+	}
+	return 1;
+}
+
+char **floodfill(char **map, t_tile *start, int width, int height)
+{
 	t_list *queue;
-	t_tile *start;
 	t_tile *c;
-	int dx[] = {1, -1, 0, 0};
-    int dy[] = {0, 0, 1, -1};
-	height = getmapheight(raw);
-	width = getmapwidth(raw);
+	t_list *curr;
 	queue = NULL;
-	start = malloc(sizeof(t_tile));
-    start->x = start_x;
-    start->y = start_y;
     ft_lstadd_back(&queue, ft_lstnew(start));
     while (queue)
     {
-        t_tile *c = queue->content;
-        queue = queue->next;
-        if (c->x < 0 || c->x >= width || c->y < 0 || c->y >= height ||
-            map[c->y][c->x] == '1' || map[c->y][c->x] == '2')
-            continue;
-        map[c->y][c->x] = '2';
-        for (int i = 0; i < 4; i++)
+        curr = ft_lstpop(&queue);
+        c = curr->content;
+		free(curr);
+		if (!should_skip(map, c->x, c->y, width, height))
         {
-            t_tile *next = malloc(sizeof(t_tile));
-            next->x = c->x + dx[i];
-            next->y = c->y + dy[i];
-            ft_lstadd_back(&queue, ft_lstnew(next));
-        }
+			map[c->y][c->x] = '2';
+			if (!add_all_to_queue(&queue, c))
+				return (NULL);
+		}
         free(c);
     }
+	return (map);
 }

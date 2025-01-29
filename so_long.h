@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/22 20:15:33 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/29 18:39:23 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ typedef enum t_tiletype
 	MAP_START = 'P'
 }	t_tiletype;
 
+typedef enum t_imgtype
+{
+	IMG_WALL,
+	IMG_FLOOR,
+	IMG_COLLECT,
+	IMG_EXIT,
+	IMG_PLAYER,
+	IMG_ERROR
+} t_imgtype;
+
 // Holds the data for a single tile on the map
 typedef struct t_tile
 {
@@ -61,7 +71,8 @@ int		getmapheight(char *rawmap);
 char	**getsplitmap(char *rawmap);
 t_bool	verifyrect(char *rawmap, int width);
 t_bool	verifywalls(char **map, int width);
-t_bool	verifyobjects(char *rawmap);
+int		verifyobjects(char *rawmap);
 void	print_map(char **map, int height, int width);
-char	*floodfill(char *raw, char **map, int start_x, int start_y);
+char	**floodfill(char **map, t_tile *start, int width, int height);
+char	*readmapfile(const char *filename);
 #endif
