@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/29 19:31:06 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/29 22:20:27 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,61 @@ char ***getsetmap(char **newmap, t_bool clear)
 	return (&map);
 }
 
+static t_tile *getplayerloc(char **map)
+{
+	int x;
+	int y;
+	t_tile *loc;
+
+	y = 0;
+	loc = malloc(sizeof(t_tile));
+	if (loc == NULL)
+		return (NULL);
+	while (map[y] != NULL)
+	{
+		x = 0;
+		while (map[y][x] != '\0')
+		{
+			if (map[y][x] == 'P')
+			{
+				*loc = (t_tile){x, y};
+				return (loc);
+			}
+			x++;
+		}
+		y++;
+	}
+	return (loc);
+}
+
+static void do_movement(t_direction dir)
+{
+	char **map;
+	t_tile *loc;
+	t_tile newloc;
+
+	map = *getsetmap(NULL, FALSE);
+	loc = getplayerloc(map);
+	newloc = (t_tile){loc->x, loc->y};
+	printf("loc: %d, %d\n", loc->x, loc->y);
+	if (dir == UP)
+		newloc.y--;
+	if (dir == DOWN)
+		newloc.y++;
+	if (dir == LEFT)
+		newloc.x--;
+	if (dir == RIGHT)
+		newloc.x++;
+	if (map[newloc.y][newloc.x] == '1')
+		return;
+	if (map[newloc.y][newloc.x] == 'C')
+	{
+		map[newloc.y][newloc.x] = '0';
+	}
+	map[loc->y][loc->x] = '0';
+	map[newloc.y][newloc.x] = 'P';
+}
+
 static void handle_keypress(void *param)
 {
 	mlx_t *mlx;
@@ -63,41 +118,69 @@ static void handle_keypress(void *param)
 	mlx = (mlx_t *)param;
     if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
         mlx_close_window(mlx);
-	// if (mlx_is_key_down(mlx, MLX_KEY_W))
-	// 	do_movement
+	else if (mlx_is_key_down(mlx, MLX_KEY_W))
+		do_movement(UP);
+	else if (mlx_is_key_down(mlx, MLX_KEY_A))
+		do_movement(LEFT);
+	else if (mlx_is_key_down(mlx, MLX_KEY_S))
+		do_movement(DOWN);
+	else if (mlx_is_key_down(mlx, MLX_KEY_D))
+		do_movement(RIGHT);
 }
 
-static mlx_image_t **get_textures(mlx_t *mlx)
-{
-	static mlx_image_t **textures = NULL;
+// static void set_textures(mlx_texture_t **textures)
+// {
+// 	textures[0] = mlx_load_png("gfx/wall.png");
+// 	textures[1] = mlx_load_png("gfx/floor.png");
+// 	textures[2] = mlx_load_png("gfx/collectible.png");
+// 	textures[3] = mlx_load_png("gfx/exit.png");
+// 	textures[4] = mlx_load_png("gfx/player.png");
+// 	textures[5] = mlx_load_png("gfx/error.png");
+// } // TODO: Might remove
 
-	if (textures != NULL)
-		return (textures);
-	textures = malloc(sizeof(mlx_image_t *) * 6);
-	if (textures == NULL)
-		return (NULL);
-	textures[0] = mlx_texture_to_image(mlx, mlx_load_png("gfx/wall.png"));
-	textures[1] = mlx_texture_to_image(mlx, mlx_load_png("gfx/floor.png"));
-	textures[2] = mlx_texture_to_image(mlx, mlx_load_png("gfx/collectible.png"));
-	textures[3] = mlx_texture_to_image(mlx, mlx_load_png("gfx/exit.png"));
-	textures[4] = mlx_texture_to_image(mlx, mlx_load_png("gfx/player.png"));
-	textures[5] = mlx_texture_to_image(mlx, mlx_load_png("gfx/error.png"));
-	return (textures);
+static mlx_image_t **get_images(mlx_t *mlx)
+{
+    static mlx_image_t **images = NULL;
+    static mlx_texture_t *textures[6] = {NULL};
+    int counter;
+
+	counter = 0;
+    if (images == NULL)
+    {
+        images = malloc(sizeof(mlx_image_t *) * 6);
+        if (images == NULL)
+            return (NULL);
+		textures[0] = mlx_load_png("gfx/wall.png");
+		textures[1] = mlx_load_png("gfx/floor.png");
+		textures[2] = mlx_load_png("gfx/collectible.png");
+		textures[3] = mlx_load_png("gfx/exit.png");
+		textures[4] = mlx_load_png("gfx/player.png");
+		textures[5] = mlx_load_png("gfx/error.png");
+        while (counter < 6)
+        {
+            images[counter] = mlx_texture_to_image(mlx, textures[counter]);
+            if (images[counter] == NULL)
+                return (free(images), NULL);
+			counter++;
+        }
+    }
+    return (images);
 }
 
 static void draw_tile(mlx_t *mlx, t_imgtype type, int x, int y)
 {
-	mlx_image_t **textures;
-	mlx_image_t *img;
+    mlx_image_t **images;
+    mlx_image_t *img;
 
-	textures = get_textures(mlx);
-	if (textures == NULL)
-	{
-		perror("ERROR: get_textures() failed\n");
-		return;
-	}
-	img = textures[type];
-	mlx_image_to_window(mlx, img, x * 32, y * 32);
+    images = get_images(mlx);
+    if (images == NULL)
+    {
+        perror("ERROR: get_images() failed\n");
+        return;
+    }
+
+    img = images[type];
+    mlx_image_to_window(mlx, img, x * 32, y * 32);
 }
 
 static t_imgtype get_tiletype(char c)
@@ -158,33 +241,6 @@ static void draw_map(void *param)
 	draw_objects(mlx, map);
 }
 
-static t_tile *getplayerloc(char **map)
-{
-	int x;
-	int y;
-	t_tile *loc;
-
-	y = 0;
-	loc = malloc(sizeof(t_tile));
-	if (loc == NULL)
-		return (NULL);
-	while (map[y] != NULL)
-	{
-		x = 0;
-		while (map[y][x] != '\0')
-		{
-			if (map[y][x] == 'P')
-			{
-				*loc = (t_tile){x, y};
-				return (loc);
-			}
-			x++;
-		}
-		y++;
-	}
-	return (loc);
-}
-
 void update_game(void* param)
 {
 	mlx_t *mlx;
@@ -204,9 +260,14 @@ void update_game(void* param)
 	newloc = getplayerloc(map);
 	//TODO: ^^^^^^get player loc can fail, must init kill game to free shit and error out etcetc
 	if (loc->x == newloc->x && loc->y == newloc->y)
+	{
+		free(newloc);
 		return;
+	}
 	map[loc->y][loc->x] = '0';
 	map[newloc->y][newloc->x] = 'P';
+	free(loc);
+	loc = newloc;
 	draw_map(mlx);
 }
 
