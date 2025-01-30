@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 15:31:39 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 16:21:58 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,36 +143,6 @@ static t_imgtype get_tiletype(char c)
 	return (IMG_ERROR);
 }
 
-void update_game(void* param)
-{
-	mlx_t *mlx;
-	char **map;
-	static t_tile *loc = NULL;
-	t_tile *newloc;
-	
-	mlx = (mlx_t *)param;
-	map = *getsetmap(NULL, FALSE);
-	if (!loc)
-	{
-		loc = getplayerloc(map);
-		draw_map(mlx);
-		return;
-	}
-	//TODO: ^^^^^^get player loc can fail, must init kill game to free shit and error out etcetc
-	newloc = getplayerloc(map);
-	//TODO: ^^^^^^get player loc can fail, must init kill game to free shit and error out etcetc
-	if (loc->x == newloc->x && loc->y == newloc->y)
-	{
-		free(newloc);
-		return;
-	}
-	map[loc->y][loc->x] = '0';
-	map[newloc->y][newloc->x] = 'P';
-	free(loc);
-	loc = newloc;
-	draw_map(mlx);
-}
-
 static t_bool floodsuccess(char **map)
 {
 	int x;
@@ -269,7 +239,7 @@ static bool set_textures(mlx_texture_t **textures)
 	i = 0;
 	textures[IMG_WALL] = mlx_load_png("gfx/wall.png");
 	textures[IMG_FLOOR] = mlx_load_png("gfx/floor.png");
-	textures[IMG_COLLECT] = mlx_load_png("gfx/collect.png");
+	textures[IMG_COLLECT] = mlx_load_png("gfx/collectible.png");
 	textures[IMG_EXIT] = mlx_load_png("gfx/exit.png");
 	textures[IMG_PLAYER] = mlx_load_png("gfx/player.png");
 	textures[IMG_ERROR] = mlx_load_png("gfx/error.png");
@@ -328,19 +298,57 @@ static void deletetextures(void)
 // and then if player moves, change the x/y of the image rather than redrawing
 // this will reveal the tile below where the player currently was so no redraw ther either? supposedly
 // if collectible is collected, set the image for it to enabled=false I guess? 
-static mlx_image_t ***getmapimgs(char **map, mlx_t *mlx)
+static mlx_image_t ***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t **imgs = NULL;
-	mlx_texture_t **textures;
+	t_tile p;
+	int total;
 
+	p = (t_tile){0, 0};
+	total = 0;
 	if (!imgs)
 	{
-		imgs = malloc(sizeof(mlx_image_t *) * getmapheight(map));
-		if (!imgs)
+		imgs = malloc(sizeof(mlx_image_t *) * getmapheight(rawmap)
+			* getmapwidth(rawmap));
+		if (!imgs || !gettextures())
 			return (NULL);
-		textures = gettextures();
-		if (!textures)
-			return (free(imgs), NULL);
+		while (p.x++ < getmapwidth(rawmap))
+		{
+			p.y = 0;
+			while (p.y++ < getmapheight(rawmap))
+			{
+				imgs[total] = mlx_texture_to_image(mlx,
+					gettextures()[get_tiletype(map[p.y - 1][p.x - 1])]);
+				if (!imgs[total++])
+					return (free(imgs), NULL);
+			}
+		}
+	}
+	return (deletetextures(), &imgs); // delete call here may be bad practice?! may fuck shit up
+}
+
+static void draw_map(mlx_t *mlx)
+{
+	mlx_image_t **imgs;
+	int x;
+	int y;
+	int total;
+
+
+	imgs = *getmapimgs(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), mlx); //TODO: Prob needs error handling
+	x = 0;
+	total = 0;
+	while (x < getmapwidth(getsetrawmap(NULL, FALSE)))
+	{
+		y = 0;
+		while (y < getmapheight(getsetrawmap(NULL, FALSE)))
+		{
+			mlx_image_to_window(mlx, imgs[total], x * 32, y * 32);
+			total++;
+			y++;
+		}
+		x++;
 	}
 }
 
@@ -354,7 +362,7 @@ int start_game(void)
 	if (mlx == NULL)
 		return (errormsg("Failed to initialize MLX"), -1);
 	mlx_loop_hook(mlx, &handle_keypress, mlx);
-	mlx_loop_hook(mlx, &update_game, mlx);
+	draw_map(mlx);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
 	return (0);
