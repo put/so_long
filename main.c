@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 21:16:55 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:01:38 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,6 +438,86 @@ static void draw_map(mlx_t *mlx)
 	}
 }
 
+static void mapimgs_cleanup(mlx_t *mlx, mlx_image_t ***imgs)
+{
+    int c;
+	int i;
+
+	c = 0;
+    if (!imgs)
+        return;
+    while (imgs[c])
+    {
+		i = 0;
+        while (imgs[c][i])
+        {
+            printf("deleting image %d\n", c);
+            mlx_delete_image(mlx, imgs[c][i]);
+            i++;
+        }
+        free(imgs[c]);
+        c++;
+    }
+    printf("freeing imgs\n");
+    printf("freeing img pointer\n");
+}
+
+static void objimgs_cleanup(mlx_t *mlx, mlx_image_t ***imgs)
+{
+    int c = 0;
+
+    if (!imgs)
+        return;
+
+    while (imgs[c])
+    {
+        int i = 0;
+        while (imgs[c][i])
+        {
+            if (imgs[c][i] != NULL)
+            {
+                printf("deleting objimgs (not null) %d\n", i);
+                mlx_delete_image(mlx, imgs[c][i]);
+                imgs[c][i] = NULL; // Avoid double free
+                printf("deleted objimgs (after) %d\n", i);
+            }
+            i++;
+        }
+        printf("before free\n");
+		if (imgs[c] != NULL)
+        	free(imgs[c]);
+        imgs[c] = NULL; // Avoid double free
+        c++;
+    }
+    free(imgs);
+    imgs = NULL; // Avoid double free
+}
+
+static void gfx_cleanup(mlx_t *mlx)
+{
+	mlx_image_t ***mapimgs;
+	mlx_image_t ***objimgs;
+	mlx_image_t **playerimg;
+
+	printf("begin cleanup\n");
+	mapimgs = getmapimgs(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), mlx);
+	objimgs = getobjimgs(*getsetmap(NULL, FALSE), mlx);
+	playerimg = getplayerimg(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), mlx);
+	printf("got imgs\n");
+	mapimgs_cleanup(mlx, mapimgs);
+	printf("cleaned mapimgs\n");
+	objimgs_cleanup(mlx, objimgs);
+	printf("cleaned objimgs\n");
+	mlx_delete_image(mlx, *playerimg);
+	printf("cleaned playerimg\n");
+	free(playerimg);
+	printf("freed playerimg\n");
+	deletetextures();
+	printf("deleted textures\n");
+}
+
 int start_game(void)
 {
 	char *rawmap;
@@ -450,8 +530,8 @@ int start_game(void)
 	mlx_loop_hook(mlx, &handle_keypress, mlx);
 	draw_map(mlx);
 	draw_objs(mlx);
-	deletetextures();
 	mlx_loop(mlx);
+	gfx_cleanup(mlx);
 	mlx_terminate(mlx);
 	return (0);
 }
@@ -476,5 +556,7 @@ int main(int argc, char** argv)
 	getsetrawmap(rawmap, FALSE);
 	getsetmap(map, FALSE);
 	mapreturn = start_game();
+	freestrarr(map);
+	free(rawmap);
 	return (mapreturn);
 }
