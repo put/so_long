@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/29 18:39:23 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 20:18:03 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,7 @@ int		verifyobjects(char *rawmap);
 void	print_map(char **map, int height, int width);
 char	**floodfill(char **map, t_tile *start, int width, int height);
 char	*readmapfile(const char *filename);
+int		getcollcount(char **map);
+t_tile	getcollatindex(char **map, int index);
+t_tile	simpleplayerloc(char **map);
 #endif

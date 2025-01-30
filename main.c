@@ -6,12 +6,14 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 16:21:58 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 21:16:55 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 #include "MLX42/include/MLX42/MLX42.h"
+
+static mlx_image_t **getplayerimg(char *rawmap, char **map, mlx_t *mlx);
 
 static void freestrarr(char **arr)
 {
@@ -83,16 +85,11 @@ static t_tile *getplayerloc(char **map)
 	return (loc);
 }
 
-static void do_movement(t_direction dir)
+t_tile getnewloc(t_tile loc, t_direction dir)
 {
-	char **map;
-	t_tile *loc;
 	t_tile newloc;
 
-	map = *getsetmap(NULL, FALSE);
-	loc = getplayerloc(map);
-	newloc = (t_tile){loc->x, loc->y};
-	printf("loc: %d, %d\n", loc->x, loc->y);
+	newloc = (t_tile){loc.x, loc.y};
 	if (dir == UP)
 		newloc.y--;
 	if (dir == DOWN)
@@ -101,14 +98,40 @@ static void do_movement(t_direction dir)
 		newloc.x--;
 	if (dir == RIGHT)
 		newloc.x++;
+	return (newloc);
+}
+
+static void update_playerimg(t_tile newloc)
+{
+	mlx_image_t *playerimg;
+
+	playerimg = *getplayerimg(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), NULL);
+
+	if (playerimg == NULL)
+		return; // TODO: MAYBE EXIT SHIT??
+	playerimg->instances[0].x = newloc.x * 32;
+	playerimg->instances[0].y = newloc.y * 32;
+}
+
+static void do_movement(t_direction dir)
+{
+	char **map;
+	t_tile oldloc;
+	t_tile newloc;
+
+	map = *getsetmap(NULL, FALSE);
+	oldloc = simpleplayerloc(map);
+	newloc = getnewloc(oldloc, dir);
 	if (map[newloc.y][newloc.x] == '1')
 		return;
 	if (map[newloc.y][newloc.x] == 'C')
 	{
 		map[newloc.y][newloc.x] = '0';
 	}
-	map[loc->y][loc->x] = '0';
+	map[oldloc.y][oldloc.x] = '0';
 	map[newloc.y][newloc.x] = 'P';
+	update_playerimg(newloc);
 }
 
 static void handle_keypress(void *param)
@@ -288,16 +311,6 @@ static void deletetextures(void)
 	free(textures);
 }
 
-// create image for each tile in map
-// set image to correct texture
-// return array of images
-// we make static and return so we can call it again later and free them
-// will also be used by a separate draw map function that we only need to use once
-
-// next step is a draw_objects function that creates 1 image for each object and the player
-// and then if player moves, change the x/y of the image rather than redrawing
-// this will reveal the tile below where the player currently was so no redraw ther either? supposedly
-// if collectible is collected, set the image for it to enabled=false I guess? 
 static mlx_image_t ***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t **imgs = NULL;
@@ -320,11 +333,84 @@ static mlx_image_t ***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 				imgs[total] = mlx_texture_to_image(mlx,
 					gettextures()[get_tiletype(map[p.y - 1][p.x - 1])]);
 				if (!imgs[total++])
-					return (free(imgs), NULL);
+					return (NULL);
 			}
 		}
 	}
-	return (deletetextures(), &imgs); // delete call here may be bad practice?! may fuck shit up
+	return (&imgs); // delete call here may be bad practice?! may fuck shit up
+}
+
+static mlx_image_t ***getobjimgs(char **map, mlx_t *mlx)
+{
+	static mlx_image_t **imgs = NULL;
+	int count;
+	int i;
+
+	if (!imgs)
+	{
+		count = getcollcount(map);
+		imgs = malloc(sizeof(mlx_image_t *) * count);
+		if (!imgs || !gettextures())
+			return (NULL);
+		i = 0;
+		while (i < count)
+		{
+			imgs[i] = mlx_texture_to_image(mlx, gettextures()[IMG_COLLECT]);
+			if (!imgs[i++])
+				return (NULL); // if this happens, should be able to call this func again and have imgs not be null and then loop through the non-null ones to destroy em and hten free pointer
+		}
+	}
+	return (&imgs);
+}
+
+static mlx_image_t **getplayerimg(char *rawmap, char **map, mlx_t *mlx)
+{
+	static mlx_image_t *player = NULL;
+	int x;
+	int y;
+
+	if (!player)
+	{
+		x = 0;
+		while (x++ < getmapwidth(rawmap))
+		{
+			y = 0;
+			while (y++ < getmapheight(rawmap))
+			{
+				if (map[y - 1][x - 1] == 'P')
+				{
+					player = mlx_texture_to_image(mlx,
+						gettextures()[IMG_PLAYER]);
+					return (&player);
+				}
+			}
+		}
+	}
+	return (&player);
+}
+
+static void draw_objs(mlx_t *mlx)
+{
+	mlx_image_t **imgs;
+	mlx_image_t *player;
+	int index;
+	int count;
+	t_tile p;
+
+	index = 0;
+	count = getcollcount(*getsetmap(NULL, FALSE));
+	imgs = *getobjimgs(*getsetmap(NULL, FALSE), mlx);
+	while (index < count)
+	{
+		p = getcollatindex(*getsetmap(NULL, FALSE), index);
+		if (p.x != -1)
+			mlx_image_to_window(mlx, imgs[index], p.x * 32, p.y * 32);
+		index++;
+	}
+	player = *getplayerimg(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), mlx);
+	p = simpleplayerloc(*getsetmap(NULL, FALSE));
+	mlx_image_to_window(mlx, player, p.x * 32, p.y * 32);
 }
 
 static void draw_map(mlx_t *mlx)
@@ -363,6 +449,8 @@ int start_game(void)
 		return (errormsg("Failed to initialize MLX"), -1);
 	mlx_loop_hook(mlx, &handle_keypress, mlx);
 	draw_map(mlx);
+	draw_objs(mlx);
+	deletetextures();
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
 	return (0);
