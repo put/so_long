@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 00:00:26 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:31:39 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,18 +318,30 @@ static void deletetextures(void)
 	free(textures);
 }
 
-static mlx_image_t **getmapimgs(char **map, mlx_t *mlx)
-{
-	// create image for each tile in map
-	// set image to correct texture
-	// return array of images
-	// we make static and return so we can call it again later and free them
-	// will also be used by a separate draw map function that we only need to use once
+// create image for each tile in map
+// set image to correct texture
+// return array of images
+// we make static and return so we can call it again later and free them
+// will also be used by a separate draw map function that we only need to use once
 
-	// next step is a draw_objects function that creates 1 image for each object and the player
-	// and then if player moves, change the x/y of the image rather than redrawing
-	// this will reveal the tile below where the player currently was so no redraw ther either? supposedly
-	// if collectible is collected, set the image for it to enabled=false I guess?
+// next step is a draw_objects function that creates 1 image for each object and the player
+// and then if player moves, change the x/y of the image rather than redrawing
+// this will reveal the tile below where the player currently was so no redraw ther either? supposedly
+// if collectible is collected, set the image for it to enabled=false I guess? 
+static mlx_image_t ***getmapimgs(char **map, mlx_t *mlx)
+{
+	static mlx_image_t **imgs = NULL;
+	mlx_texture_t **textures;
+
+	if (!imgs)
+	{
+		imgs = malloc(sizeof(mlx_image_t *) * getmapheight(map));
+		if (!imgs)
+			return (NULL);
+		textures = gettextures();
+		if (!textures)
+			return (free(imgs), NULL);
+	}
 }
 
 int start_game(void)
