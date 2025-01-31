@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 22:01:38 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:05:58 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -436,61 +436,6 @@ static void draw_map(mlx_t *mlx)
 		}
 		x++;
 	}
-}
-
-static void mapimgs_cleanup(mlx_t *mlx, mlx_image_t ***imgs)
-{
-    int c;
-	int i;
-
-	c = 0;
-    if (!imgs)
-        return;
-    while (imgs[c])
-    {
-		i = 0;
-        while (imgs[c][i])
-        {
-            printf("deleting image %d\n", c);
-            mlx_delete_image(mlx, imgs[c][i]);
-            i++;
-        }
-        free(imgs[c]);
-        c++;
-    }
-    printf("freeing imgs\n");
-    printf("freeing img pointer\n");
-}
-
-static void objimgs_cleanup(mlx_t *mlx, mlx_image_t ***imgs)
-{
-    int c = 0;
-
-    if (!imgs)
-        return;
-
-    while (imgs[c])
-    {
-        int i = 0;
-        while (imgs[c][i])
-        {
-            if (imgs[c][i] != NULL)
-            {
-                printf("deleting objimgs (not null) %d\n", i);
-                mlx_delete_image(mlx, imgs[c][i]);
-                imgs[c][i] = NULL; // Avoid double free
-                printf("deleted objimgs (after) %d\n", i);
-            }
-            i++;
-        }
-        printf("before free\n");
-		if (imgs[c] != NULL)
-        	free(imgs[c]);
-        imgs[c] = NULL; // Avoid double free
-        c++;
-    }
-    free(imgs);
-    imgs = NULL; // Avoid double free
 }
 
 static void gfx_cleanup(mlx_t *mlx)
