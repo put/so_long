@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/30 22:05:58 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 20:47:34 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "MLX42/include/MLX42/MLX42.h"
 
 static mlx_image_t **getplayerimg(char *rawmap, char **map, mlx_t *mlx);
+static mlx_image_t ***getobjimgs(char **map, mlx_t *mlx);
 
 static void freestrarr(char **arr)
 {
@@ -114,6 +115,26 @@ static void update_playerimg(t_tile newloc)
 	playerimg->instances[0].y = newloc.y * 32;
 }
 
+static void hide_collectible(int x, int y)
+{
+	mlx_image_t **imgs;
+	int count;
+
+	imgs = *getobjimgs(*getsetmap(NULL, FALSE), NULL);
+	count = 0;
+
+	while (imgs[count])
+	{
+		if (imgs[count]->instances[0].x == x * 32
+			&& imgs[count]->instances[0].y == y * 32)
+		{
+			imgs[count]->instances[0].enabled = false;
+			break;
+		}
+		count++;
+	}
+}
+
 static void do_movement(t_direction dir)
 {
 	char **map;
@@ -127,6 +148,7 @@ static void do_movement(t_direction dir)
 		return;
 	if (map[newloc.y][newloc.x] == 'C')
 	{
+		hide_collectible(newloc.x, newloc.y);
 		map[newloc.y][newloc.x] = '0';
 	}
 	map[oldloc.y][oldloc.x] = '0';
@@ -210,9 +232,9 @@ static int verifymap(char *rawmap)
 		return (freestrarr(map), objectreturn);
 	playerloc = getplayerloc(map);
 	if (!playerloc || playerloc->x == -1)
-		return (freestrarr(map), -5);
+		return (freestrarr(map), free(playerloc), -5);
 	if (!floodsuccess(floodfill(map, playerloc, width, height)))
-		return (freestrarr(map), -6);
+		return (freestrarr(map), free(playerloc), -6);
 	return (freestrarr(map), 1);
 }
 
@@ -315,14 +337,13 @@ static mlx_image_t ***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t **imgs = NULL;
 	t_tile p;
-	int total;
+	static int total = 0;
 
 	p = (t_tile){0, 0};
-	total = 0;
 	if (!imgs)
 	{
-		imgs = malloc(sizeof(mlx_image_t *) * getmapheight(rawmap)
-			* getmapwidth(rawmap));
+		imgs = malloc(sizeof(mlx_image_t *) * ((getmapheight(rawmap)
+			* getmapwidth(rawmap)) + 1));
 		if (!imgs || !gettextures())
 			return (NULL);
 		while (p.x++ < getmapwidth(rawmap))
@@ -336,6 +357,7 @@ static mlx_image_t ***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 					return (NULL);
 			}
 		}
+		imgs[total] = NULL;
 	}
 	return (&imgs); // delete call here may be bad practice?! may fuck shit up
 }
@@ -349,7 +371,7 @@ static mlx_image_t ***getobjimgs(char **map, mlx_t *mlx)
 	if (!imgs)
 	{
 		count = getcollcount(map);
-		imgs = malloc(sizeof(mlx_image_t *) * count);
+		imgs = malloc(sizeof(mlx_image_t *) * (count + 1));
 		if (!imgs || !gettextures())
 			return (NULL);
 		i = 0;
@@ -359,6 +381,7 @@ static mlx_image_t ***getobjimgs(char **map, mlx_t *mlx)
 			if (!imgs[i++])
 				return (NULL); // if this happens, should be able to call this func again and have imgs not be null and then loop through the non-null ones to destroy em and hten free pointer
 		}
+		imgs[i] = NULL;
 	}
 	return (&imgs);
 }
@@ -438,31 +461,6 @@ static void draw_map(mlx_t *mlx)
 	}
 }
 
-static void gfx_cleanup(mlx_t *mlx)
-{
-	mlx_image_t ***mapimgs;
-	mlx_image_t ***objimgs;
-	mlx_image_t **playerimg;
-
-	printf("begin cleanup\n");
-	mapimgs = getmapimgs(getsetrawmap(NULL, FALSE),
-		*getsetmap(NULL, FALSE), mlx);
-	objimgs = getobjimgs(*getsetmap(NULL, FALSE), mlx);
-	playerimg = getplayerimg(getsetrawmap(NULL, FALSE),
-		*getsetmap(NULL, FALSE), mlx);
-	printf("got imgs\n");
-	mapimgs_cleanup(mlx, mapimgs);
-	printf("cleaned mapimgs\n");
-	objimgs_cleanup(mlx, objimgs);
-	printf("cleaned objimgs\n");
-	mlx_delete_image(mlx, *playerimg);
-	printf("cleaned playerimg\n");
-	free(playerimg);
-	printf("freed playerimg\n");
-	deletetextures();
-	printf("deleted textures\n");
-}
-
 int start_game(void)
 {
 	char *rawmap;
@@ -476,7 +474,12 @@ int start_game(void)
 	draw_map(mlx);
 	draw_objs(mlx);
 	mlx_loop(mlx);
-	gfx_cleanup(mlx);
+	deletetextures();
+	mlx_image_t ***mapimgs = getmapimgs(getsetrawmap(NULL, FALSE),
+		*getsetmap(NULL, FALSE), mlx);
+	mlx_image_t ***objimgs = getobjimgs(*getsetmap(NULL, FALSE), mlx);
+	free(*mapimgs);
+	free(*objimgs);
 	mlx_terminate(mlx);
 	return (0);
 }
@@ -503,5 +506,6 @@ int main(int argc, char** argv)
 	mapreturn = start_game();
 	freestrarr(map);
 	free(rawmap);
+	
 	return (mapreturn);
 }
