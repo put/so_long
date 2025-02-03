@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 20:47:34 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:16:36 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,9 +135,37 @@ static void hide_collectible(int x, int y)
 	}
 }
 
-static void do_movement(t_direction dir)
+static t_tile getsetexit(t_tile tile, bool update)
+{
+	static t_tile exit = (t_tile){-1, -1};
+
+	if (update)
+	{
+		exit.x = tile.x;
+		exit.y = tile.y;
+	}
+	return (exit);
+}
+
+static t_tile getexit()
+{
+	return (getsetexit((t_tile){0, 0}, false));
+}
+
+static void checkforwin(char **map, t_tile newloc, mlx_t *mlx)
+{
+	if (getexit().x == newloc.x && getexit().y == newloc.y
+	&& getcollcount(map) == 0)
+	{
+		mlx_close_window(mlx);
+		ft_printf("You win!\n");
+	}
+}
+
+static void do_movement(t_direction dir, mlx_t *mlx)
 {
 	char **map;
+	static int move_count = 0;
 	t_tile oldloc;
 	t_tile newloc;
 
@@ -151,26 +179,33 @@ static void do_movement(t_direction dir)
 		hide_collectible(newloc.x, newloc.y);
 		map[newloc.y][newloc.x] = '0';
 	}
+	if (map[newloc.y][newloc.x] == 'E')
+		getsetexit(newloc, true);
 	map[oldloc.y][oldloc.x] = '0';
 	map[newloc.y][newloc.x] = 'P';
+	move_count++;
 	update_playerimg(newloc);
+	ft_printf("Move count: %d\n", move_count);
+	checkforwin(map, newloc, mlx);
 }
 
-static void handle_keypress(void *param)
+static void handle_keypress(mlx_key_data_t keydata, void *param)
 {
 	mlx_t *mlx;
 
 	mlx = (mlx_t *)param;
-    if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
+	if (keydata.action != MLX_PRESS)
+		return;
+    if (keydata.key == MLX_KEY_ESCAPE)
         mlx_close_window(mlx);
-	else if (mlx_is_key_down(mlx, MLX_KEY_W))
-		do_movement(UP);
-	else if (mlx_is_key_down(mlx, MLX_KEY_A))
-		do_movement(LEFT);
-	else if (mlx_is_key_down(mlx, MLX_KEY_S))
-		do_movement(DOWN);
-	else if (mlx_is_key_down(mlx, MLX_KEY_D))
-		do_movement(RIGHT);
+	else if (keydata.key == MLX_KEY_W)
+		do_movement(UP, mlx);
+	else if (keydata.key == MLX_KEY_A)
+		do_movement(LEFT, mlx);
+	else if (keydata.key == MLX_KEY_S)
+		do_movement(DOWN, mlx);
+	else if (keydata.key == MLX_KEY_D)
+		do_movement(RIGHT, mlx);
 }
 
 static t_imgtype get_tiletype(char c)
@@ -470,7 +505,7 @@ int start_game(void)
 		getmapheight(rawmap) * 32, "So Long", false);
 	if (mlx == NULL)
 		return (errormsg("Failed to initialize MLX"), -1);
-	mlx_loop_hook(mlx, &handle_keypress, mlx);
+	mlx_key_hook(mlx, &handle_keypress, mlx);
 	draw_map(mlx);
 	draw_objs(mlx);
 	mlx_loop(mlx);

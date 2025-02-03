@@ -1,5 +1,6 @@
-*/
+/libft
+/MLX42
 *.out
 *.gch
 *.o
-main
+*.supp
