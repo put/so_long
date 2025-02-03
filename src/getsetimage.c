@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   img_retrieval.c                                    :+:      :+:    :+:   */
+/*   getsetimage.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:23:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:26:28 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:03:04 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-static bool	set_textures(mlx_texture_t **textures)
+bool	set_textures(mlx_texture_t **textures)
 {
 	int	i;
 	int	j;
@@ -38,7 +38,7 @@ static bool	set_textures(mlx_texture_t **textures)
 	return (true);
 }
 
-static mlx_texture_t	**gettextures(void)
+mlx_texture_t	**gettextures(void)
 {
 	static mlx_texture_t	**textures = NULL;
 
@@ -53,7 +53,7 @@ static mlx_texture_t	**gettextures(void)
 	return (textures);
 }
 
-static mlx_image_t	***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
+mlx_image_t	***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t	**imgs = NULL;
 	t_tile				p;
@@ -82,7 +82,7 @@ static mlx_image_t	***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 	return (&imgs);
 }
 
-static mlx_image_t	***getobjimgs(char **map, mlx_t *mlx)
+mlx_image_t	***getobjimgs(char **map, mlx_t *mlx)
 {
 	static mlx_image_t	**imgs = NULL;
 	int					count;
@@ -106,7 +106,7 @@ static mlx_image_t	***getobjimgs(char **map, mlx_t *mlx)
 	return (&imgs);
 }
 
-static mlx_image_t	**getplayerimg(char *rawmap, char **map, mlx_t *mlx)
+mlx_image_t	**getplayerimg(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t	*player = NULL;
 	int					x;

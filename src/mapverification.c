@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:49:36 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:03:30 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 	return (map);
 }
 
-static bool	floodsuccess(char **map)
+bool	floodsuccess(char **map)
 {
 	int	x;
 	int	y;

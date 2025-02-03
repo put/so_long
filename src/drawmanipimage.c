@@ -6,13 +6,13 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:28:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:52:37 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:02:21 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-static void	draw_objs(mlx_t *mlx)
+void	draw_objs(mlx_t *mlx)
 {
 	mlx_image_t	**imgs;
 	mlx_image_t	*player;
@@ -36,7 +36,7 @@ static void	draw_objs(mlx_t *mlx)
 	mlx_image_to_window(mlx, player, p.x * 32, p.y * 32);
 }
 
-static void	draw_map(mlx_t *mlx)
+void	draw_map(mlx_t *mlx)
 {
 	mlx_image_t	**imgs;
 	int			x;
@@ -60,7 +60,7 @@ static void	draw_map(mlx_t *mlx)
 	}
 }
 
-static void	hide_collectible(int x, int y)
+void	hide_collectible(int x, int y)
 {
 	mlx_image_t	**imgs;
 	int			count;
@@ -79,7 +79,7 @@ static void	hide_collectible(int x, int y)
 	}
 }
 
-static void	update_playerimg(t_tile newloc)
+void	update_playerimg(t_tile newloc)
 {
 	mlx_image_t	*playerimg;
 
@@ -89,7 +89,7 @@ static void	update_playerimg(t_tile newloc)
 	playerimg->instances[0].y = newloc.y * 32;
 }
 
-static t_imgtype	get_tiletype(char c)
+t_imgtype	get_tiletype(char c)
 {
 	if (c == '1')
 		return (IMG_WALL);

@@ -6,13 +6,13 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:51:11 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:53:30 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:02:43 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-static void	handle_keypress(mlx_key_data_t keydata, void *param)
+void	handle_keypress(mlx_key_data_t keydata, void *param)
 {
 	mlx_t	*mlx;
 
@@ -31,7 +31,7 @@ static void	handle_keypress(mlx_key_data_t keydata, void *param)
 		do_movement(RIGHT, mlx);
 }
 
-static int	verifymap(char *rawmap)
+int	verifymap(char *rawmap)
 {
 	int		width;
 	int		height;
@@ -59,7 +59,7 @@ static int	verifymap(char *rawmap)
 	return (freestrarr(map), 1);
 }
 
-static void	checkforwin(char **map, t_tile newloc, mlx_t *mlx)
+void	checkforwin(char **map, t_tile newloc, mlx_t *mlx)
 {
 	if (getexit().x == newloc.x && getexit().y == newloc.y
 		&& getcollcount(map) == 0)
@@ -69,7 +69,7 @@ static void	checkforwin(char **map, t_tile newloc, mlx_t *mlx)
 	}
 }
 
-static void	do_movement(t_direction dir, mlx_t *mlx)
+void	do_movement(t_direction dir, mlx_t *mlx)
 {
 	char		**map;
 	static int	move_count = 0;

@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:01:13 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:04:26 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void				update_playerimg(t_tile newloc);
 t_imgtype			get_tiletype(char c);
 
 // getsetmap.c
-char				*getrawmap(const char *filename);
+char				*getrawmap(char *filename);
 char				*getsetrawmap(char *newmap, bool clear);
 char				***getsetmap(char **newmap, bool clear);
 char				**getsplitmap(char *rawmap);

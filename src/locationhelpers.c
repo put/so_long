@@ -6,13 +6,13 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:35:31 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:49:36 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:03:20 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-static t_tile	*getplayerloc(char **map)
+t_tile	*getplayerloc(char **map)
 {
 	int		x;
 	int		y;
@@ -55,7 +55,7 @@ t_tile	getnewloc(t_tile loc, t_direction dir)
 	return (newloc);
 }
 
-static t_tile	getsetexit(t_tile tile, bool update)
+t_tile	getsetexit(t_tile tile, bool update)
 {
 	static t_tile	exit = (t_tile){-1, -1};
 
@@ -67,7 +67,7 @@ static t_tile	getsetexit(t_tile tile, bool update)
 	return (exit);
 }
 
-static t_tile	getexit(void)
+t_tile	getexit(void)
 {
 	return (getsetexit((t_tile){0, 0}, false));
 }

@@ -6,13 +6,13 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:47:08 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:47:49 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:02:05 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-static void	freestrarr(char **arr)
+void	freestrarr(char **arr)
 {
 	int	i;
 
@@ -27,7 +27,7 @@ static void	freestrarr(char **arr)
 	free(arr);
 }
 
-static void	deletetextures(void)
+void	deletetextures(void)
 {
 	mlx_texture_t	**textures;
 	int				i;
