@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:23:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:03:04 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:16:14 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ bool	set_textures(mlx_texture_t **textures)
 	int	j;
 
 	i = 0;
-	textures[IMG_WALL] = mlx_load_png("gfx/wall.png");
-	textures[IMG_FLOOR] = mlx_load_png("gfx/floor.png");
-	textures[IMG_COLLECT] = mlx_load_png("gfx/collectible.png");
-	textures[IMG_EXIT] = mlx_load_png("gfx/exit.png");
-	textures[IMG_PLAYER] = mlx_load_png("gfx/player.png");
-	textures[IMG_ERROR] = mlx_load_png("gfx/error.png");
+	textures[IMG_WALL] = mlx_load_png("textures/wall.png");
+	textures[IMG_FLOOR] = mlx_load_png("textures/floor.png");
+	textures[IMG_COLLECT] = mlx_load_png("textures/collectible.png");
+	textures[IMG_EXIT] = mlx_load_png("textures/exit.png");
+	textures[IMG_PLAYER] = mlx_load_png("textures/player.png");
+	textures[IMG_ERROR] = mlx_load_png("textures/error.png");
 	while (i < 6)
 	{
 		j = 0;

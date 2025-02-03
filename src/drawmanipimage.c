@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:28:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:02:21 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:09:38 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +103,3 @@ t_imgtype	get_tiletype(char c)
 		return (IMG_FLOOR);
 	return (IMG_ERROR);
 }
-

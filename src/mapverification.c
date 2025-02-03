@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:03:30 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:13:46 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 	t_list	*queue;
 	t_tile	*c;
 	t_list	*curr;
+
 	queue = NULL;
 	ft_lstadd_back(&queue, ft_lstnew(start));
 	while (queue)
@@ -24,7 +25,7 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 		curr = ft_lstpop(&queue);
 		c = curr->content;
 		free(curr);
-		if (!should_skip(map, c->x, c->y, width, height))
+		if (!should_skip(map, *c, width, height))
 		{
 			map[c->y][c->x] = '2';
 			if (!add_all_to_queue(&queue, c))

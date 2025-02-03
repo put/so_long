@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:18:53 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:57:14 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:13:35 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*readmapfile(const char *filename)
 	char	*res;
 	char	*temp;
 	char	*temp2;
-	
+
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (NULL);

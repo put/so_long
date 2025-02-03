@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:04:26 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 23:14:58 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef enum t_imgtype
 	IMG_EXIT,
 	IMG_PLAYER,
 	IMG_ERROR
-} t_imgtype;
+}	t_imgtype;
 
 // Holds the data for a single tile on the map
 typedef struct t_tile
@@ -76,7 +76,7 @@ mlx_image_t			**getplayerimg(char *rawmap, char **map, mlx_t *mlx);
 // drawmanipimage.c
 void				draw_objs(mlx_t *mlx);
 void				draw_map(mlx_t *mlx);
-void 				hide_collectible(int x, int y);
+void				hide_collectible(int x, int y);
 void				update_playerimg(t_tile newloc);
 t_imgtype			get_tiletype(char c);
 
@@ -96,12 +96,13 @@ bool				comp_coords(t_tile coord1, t_tile coord2);
 // floodfillhelpers.c
 t_list				*ft_lstpop(t_list **queue);
 int					sideval(int index, bool is_dx);
-bool				should_skip(char **map, int x, int y, int width, int height);
+bool				should_skip(char **map, t_tile p, int width, int height);
 t_tile				*maketile(int x, int y);
 int					add_all_to_queue(t_list **queue, t_tile *c);
 
 // floodfill.c
-char				**floodfill(char **map, t_tile *start, int width, int height);
+char				**floodfill(char **map, t_tile *start,
+						int width, int height);
 bool				floodsuccess(char **map);
 bool				verifywalls(char **map, int width);
 bool				verifyrect(char *rawmap, int width);
@@ -115,8 +116,8 @@ int					getmapheight(char *rawmap);
 t_tile				simpleplayerloc(char **map);
 
 /// cleanup.c
-void					freestrarr(char **arr);
-void					deletetextures(void);
+void				freestrarr(char **arr);
+void				deletetextures(void);
 
 // errors.c
 void				errormsg(char *msg);
