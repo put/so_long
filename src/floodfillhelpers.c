@@ -1,21 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   traversal.c                                        :+:      :+:    :+:   */
+/*   floodfillhelpers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 13:45:17 by mschippe          #+#    #+#             */
-/*   Updated: 2025/01/29 17:53:13 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/03 22:49:36 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-
-t_bool comp_coords(t_tile coord1, t_tile coord2)
-{
-	return (coord1.x == coord2.x && coord1.y == coord2.y);
-}
 
 t_list *ft_lstpop(t_list **queue)
 {
@@ -29,7 +24,7 @@ t_list *ft_lstpop(t_list **queue)
 	return (tmp);
 }
 
-int sideval(int index, t_bool is_dx)
+int sideval(int index, bool is_dx)
 {
 	if (is_dx)
 	{
@@ -48,7 +43,7 @@ int sideval(int index, t_bool is_dx)
 	return (0);
 }
 
-t_bool should_skip(char **map, int x, int y, int width, int height)
+bool should_skip(char **map, int x, int y, int width, int height)
 {
 	return (x < 0 || x >= width || y < 0 || y >= height ||
 			map[y][x] == '1' || map[y][x] == '2');
@@ -80,27 +75,4 @@ int add_all_to_queue(t_list **queue, t_tile *c)
 		i++;
 	}
 	return 1;
-}
-
-char **floodfill(char **map, t_tile *start, int width, int height)
-{
-	t_list *queue;
-	t_tile *c;
-	t_list *curr;
-	queue = NULL;
-    ft_lstadd_back(&queue, ft_lstnew(start));
-    while (queue)
-    {
-        curr = ft_lstpop(&queue);
-        c = curr->content;
-		free(curr);
-		if (!should_skip(map, c->x, c->y, width, height))
-        {
-			map[c->y][c->x] = '2';
-			if (!add_all_to_queue(&queue, c))
-				return (NULL);
-		}
-        free(c);
-    }
-	return (map);
 }

@@ -10,7 +10,7 @@ LIBFT_PATH = ./libft
 HEADERS = -I$(MLX42_PATH)/include -I$(LIBFT_PATH)
 LIBS = $(MLX42_PATH)/build/libmlx42.a $(LIBFT_PATH)/libft.a -ldl -lglfw -pthread -lm
 
-SRCS = main.c maps.c traversal.c io.c
+SRCS = src/cleanup.c src/drawmanipimage.c src/errors.c src/floodfillhelpers.c src/gamelogic.c src/getsetimage.c src/getsetmap.c src/io.c src/locationhelpers.c src/main.c src/maphelpers.c src/mapverification.c
 OBJS = $(SRCS:.c=.o)
 
 all: mlx42 libft $(NAME)
