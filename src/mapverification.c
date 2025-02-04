@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:13:46 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/04 14:52:25 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,16 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 	while (queue)
 	{
 		curr = ft_lstpop(&queue);
+		if (!curr)
+			return (errormsg("failed to pop from queue"), NULL);
+
 		c = curr->content;
 		free(curr);
 		if (!should_skip(map, *c, width, height))
 		{
 			map[c->y][c->x] = '2';
 			if (!add_all_to_queue(&queue, c))
-				return (NULL);
+				return (errormsg("failed to add to queue"), NULL);
 		}
 		free(c);
 	}
@@ -47,12 +50,10 @@ bool	floodsuccess(char **map)
 		x = 0;
 		while (map[y][x] != '\0')
 		{
-			printf("%c", map[y][x]);
 			if (map[y][x] == 'C' || map[y][x] == 'E')
 				return (false);
 			x++;
 		}
-		printf("\n");
 		y++;
 	}
 	return (true);

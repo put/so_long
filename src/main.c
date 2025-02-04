@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:53:16 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/04 14:54:53 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ int	main(int argc, char **argv)
 	if (rawmap == NULL)
 		return (errormsg("Invalid map file"), -1);
 	mapreturn = verifymap(rawmap);
-	if (verifymap(rawmap) != 1)
-		return (errormsg(get_map_err(mapreturn)), -1);
+	if (mapreturn != 1)
+		return (errormsg(get_map_err(mapreturn)), free(rawmap), -1);
 	map = getsplitmap(rawmap);
 	if (map == NULL)
-		return (errormsg("Failed to split map"), -1);
+		return (errormsg("Failed to split map"), freestrarr(map),
+				free(rawmap), -1);
 	getsetrawmap(rawmap, false);
 	getsetmap(map, false);
 	mapreturn = start_game();

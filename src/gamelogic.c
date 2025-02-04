@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:51:11 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:02:43 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/04 14:59:06 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ int	verifymap(char *rawmap)
 	if (!verifywalls(map, width))
 		return (freestrarr(map), -4);
 	objectreturn = verifyobjects(rawmap);
-	if (!objectreturn)
+	if (objectreturn != 1)
 		return (freestrarr(map), objectreturn);
 	playerloc = getplayerloc(map);
 	if (!playerloc || playerloc->x == -1)
 		return (freestrarr(map), free(playerloc), -5);
 	if (!floodsuccess(floodfill(map, playerloc, width, height)))
-		return (freestrarr(map), free(playerloc), -6);
+		return (freestrarr(map), -6);
 	return (freestrarr(map), 1);
 }
 
