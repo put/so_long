@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:51:11 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/04 14:59:06 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/04 15:31:58 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	start_game(void)
 
 	rawmap = getsetrawmap(NULL, false);
 	mlx = mlx_init(getmapwidth(rawmap) * 32,
-			getmapheight(rawmap) * 32, "So Long", false);
+			getmapheight(rawmap) * 32, "So Long", true);
 	if (mlx == NULL)
 		return (errormsg("Failed to initialize MLX"), -1);
 	mlx_key_hook(mlx, &handle_keypress, mlx);

@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/04 14:52:25 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/04 15:41:01 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 		curr = ft_lstpop(&queue);
 		if (!curr)
 			return (errormsg("failed to pop from queue"), NULL);
-
 		c = curr->content;
 		free(curr);
 		if (!should_skip(map, *c, width, height))
