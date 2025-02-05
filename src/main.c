@@ -6,12 +6,18 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:54:47 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/04 15:40:37 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:47:33 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * The main function for the so_long game
+ * @param argc - The number of arguments
+ * @param argv - The arguments
+ * @return 0 if the game was started successfully, otherwise -1
+ */
 int	main(int argc, char **argv)
 {
 	char	*rawmap;

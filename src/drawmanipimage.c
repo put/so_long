@@ -6,12 +6,16 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:28:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:09:38 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:34:38 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * Draws collectibles and the player to the MLX window
+ * @param mlx - An already initialized MLX instance
+ */
 void	draw_objs(mlx_t *mlx)
 {
 	mlx_image_t	**imgs;
@@ -36,6 +40,10 @@ void	draw_objs(mlx_t *mlx)
 	mlx_image_to_window(mlx, player, p.x * 32, p.y * 32);
 }
 
+/**
+ * Draws the base map to the MLX window
+ * @param mlx - An already initialized MLX instance
+ */
 void	draw_map(mlx_t *mlx)
 {
 	mlx_image_t	**imgs;
@@ -60,6 +68,11 @@ void	draw_map(mlx_t *mlx)
 	}
 }
 
+/**
+ * Loops through all object images and disables the one at the given location
+ * @param x - The x coordinate of the object to hide
+ * @param y - The y coordinate of the object to hide
+ */
 void	hide_collectible(int x, int y)
 {
 	mlx_image_t	**imgs;
@@ -79,6 +92,10 @@ void	hide_collectible(int x, int y)
 	}
 }
 
+/**
+ * Updates the player image to the new location
+ * @param newloc - The new location of the player
+ */
 void	update_playerimg(t_tile newloc)
 {
 	mlx_image_t	*playerimg;
@@ -89,6 +106,11 @@ void	update_playerimg(t_tile newloc)
 	playerimg->instances[0].y = newloc.y * 32;
 }
 
+/**
+ * Returns the image index of the given tile type
+ * @param c - The tile character to check (1, 0, C, E, P)
+ * @return the image index of the given tile type (enumerated)
+ */
 t_imgtype	get_tiletype(char c)
 {
 	if (c == '1')

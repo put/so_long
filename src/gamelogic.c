@@ -6,12 +6,18 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:51:11 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/04 15:31:58 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:54:52 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * Handles keypress events for the game, used for player
+ * movement and window closing
+ * @param keydata - The key data for the event
+ * @param param - An MLX instance to close the window on escape
+ */
 void	handle_keypress(mlx_key_data_t keydata, void *param)
 {
 	mlx_t	*mlx;
@@ -31,6 +37,11 @@ void	handle_keypress(mlx_key_data_t keydata, void *param)
 		do_movement(RIGHT, mlx);
 }
 
+/**
+ * Verifies the map for correctness
+ * @param rawmap - The raw map string to verify
+ * @return 1 if the map is valid, otherwise an error code
+ */
 int	verifymap(char *rawmap)
 {
 	int		width;
@@ -59,6 +70,13 @@ int	verifymap(char *rawmap)
 	return (freestrarr(map), 1);
 }
 
+/**
+ * Checks whether player is at the exit and all collectibles are
+ * collected and closes the window if so
+ * @param map - The map to check against
+ * @param newloc - The new location of the player
+ * @param mlx - The MLX instance to close the window on win
+ */
 void	checkforwin(char **map, t_tile newloc, mlx_t *mlx)
 {
 	if (getexit().x == newloc.x && getexit().y == newloc.y
@@ -69,6 +87,11 @@ void	checkforwin(char **map, t_tile newloc, mlx_t *mlx)
 	}
 }
 
+/**
+ * Moves the player in the given direction
+ * @param dir - The direction to move the player
+ * @param mlx - The MLX instance to update the window with
+ */
 void	do_movement(t_direction dir, mlx_t *mlx)
 {
 	char		**map;
@@ -96,6 +119,10 @@ void	do_movement(t_direction dir, mlx_t *mlx)
 	checkforwin(map, newloc, mlx);
 }
 
+/**
+ * Initializes and starts everything needed for the game
+ * @return 0 if the game was started successfully, otherwise -1
+ */
 int	start_game(void)
 {
 	char		*rawmap;

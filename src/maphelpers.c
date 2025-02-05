@@ -6,14 +6,17 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:32:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 22:46:07 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:49:42 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-// Takes a raw map (no processing) and counts
-// how many characters are in the first line
+/**
+ * Returns the width of the map
+ * @param rawmap - The raw map string to get the width of
+ * @return the width of the map
+ */
 int	getmapwidth(char *rawmap)
 {
 	int	x;
@@ -26,8 +29,11 @@ int	getmapwidth(char *rawmap)
 	return (x);
 }
 
-// Takes a raw map (no processing) and counts
-// how many newlines are in the string
+/**
+ * Returns the height of the map
+ * @param rawmap - The raw map string to get the height of
+ * @return the height of the map
+ */
 int	getmapheight(char *rawmap)
 {
 	int	y;
@@ -44,6 +50,11 @@ int	getmapheight(char *rawmap)
 	return (y + 1);
 }
 
+/**
+ * Finds the amount of collectibles in the map
+ * @param map - The map to search
+ * @return the amount of collectibles in the map
+ */
 int	getcollcount(char **map)
 {
 	int	x;
@@ -67,6 +78,12 @@ int	getcollcount(char **map)
 	return (count);
 }
 
+/**
+ * Returns the location of the collectible at the given index
+ * @param map - The map to search
+ * @param index - The index of the collectible to find
+ * @return the location of the collectible at the given index
+ */
 t_tile	getcollatindex(char **map, int index)
 {
 	int	x;
@@ -94,6 +111,11 @@ t_tile	getcollatindex(char **map, int index)
 	return ((t_tile){-1, -1});
 }
 
+/**
+ * Returns the location of the player on the map (non-malloc'ed tile)
+ * @param map - The map to search
+ * @return the location of the player on the map
+ */
 t_tile	simpleplayerloc(char **map)
 {
 	int	x;

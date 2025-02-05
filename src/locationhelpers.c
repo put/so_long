@@ -6,12 +6,17 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:35:31 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:03:20 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:47:05 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * Returns the location of the player on the map
+ * @param map - The map to search
+ * @return the location of the player on the map
+ */
 t_tile	*getplayerloc(char **map)
 {
 	int		x;
@@ -39,6 +44,12 @@ t_tile	*getplayerloc(char **map)
 	return (loc);
 }
 
+/**
+ * Updates a tile to move in one direction from a previous location
+ * @param loc - The previous location
+ * @param dir - The direction to move
+ * @return the new location
+ */
 t_tile	getnewloc(t_tile loc, t_direction dir)
 {
 	t_tile	newloc;
@@ -55,6 +66,12 @@ t_tile	getnewloc(t_tile loc, t_direction dir)
 	return (newloc);
 }
 
+/**
+ * Gets and sets the exit location on the map
+ * @param tile - The tile to set as the exit
+ * @param update - Whether to update the exit location
+ * @return the exit location
+ */
 t_tile	getsetexit(t_tile tile, bool update)
 {
 	static t_tile	exit = (t_tile){-1, -1};
@@ -67,11 +84,21 @@ t_tile	getsetexit(t_tile tile, bool update)
 	return (exit);
 }
 
+/**
+ * Returns the exit location on the map
+ * @return the exit location
+ */
 t_tile	getexit(void)
 {
 	return (getsetexit((t_tile){0, 0}, false));
 }
 
+/**
+ * Compares two tiles to see if they are the same
+ * @param coord1 - The first tile to compare
+ * @param coord2 - The second tile to compare
+ * @return true if the tiles are the same, false otherwise
+ */
 bool	comp_coords(t_tile coord1, t_tile coord2)
 {
 	return (coord1.x == coord2.x && coord1.y == coord2.y);

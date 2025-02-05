@@ -6,12 +6,17 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:23:34 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/03 23:16:14 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:42:05 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * Loads textures from PNGs into the given array
+ * @param textures - The array to load the textures into
+ * @return true if all textures were loaded successfully, otherwise false
+ */
 bool	set_textures(mlx_texture_t **textures)
 {
 	int	i;
@@ -38,6 +43,10 @@ bool	set_textures(mlx_texture_t **textures)
 	return (true);
 }
 
+/**
+ * Returns the array of textures for the game
+ * @return the array of textures for the game
+ */
 mlx_texture_t	**gettextures(void)
 {
 	static mlx_texture_t	**textures = NULL;
@@ -53,6 +62,13 @@ mlx_texture_t	**gettextures(void)
 	return (textures);
 }
 
+/**
+ * Returns the array of map images for the game
+ * @param rawmap - The raw map string to get the images for
+ * @param map - The map to get the images for
+ * @param mlx - The MLX instance to create the images with
+ * @return the array of map images for the game
+ */
 mlx_image_t	***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t	**imgs = NULL;
@@ -82,6 +98,12 @@ mlx_image_t	***getmapimgs(char *rawmap, char **map, mlx_t *mlx)
 	return (&imgs);
 }
 
+/**
+ * Returns the array of object images for the game
+ * @param map - The map to get the images for
+ * @param mlx - The MLX instance to create the images with
+ * @return the array of object images for the game
+ */
 mlx_image_t	***getobjimgs(char **map, mlx_t *mlx)
 {
 	static mlx_image_t	**imgs = NULL;
@@ -106,6 +128,13 @@ mlx_image_t	***getobjimgs(char **map, mlx_t *mlx)
 	return (&imgs);
 }
 
+/**
+ * Returns the image of the player
+ * @param rawmap - The raw map string to get the player image from
+ * @param map - The map to get the player image from
+ * @param mlx - The MLX instance to create the image with
+ * @return the image of the player
+ */
 mlx_image_t	**getplayerimg(char *rawmap, char **map, mlx_t *mlx)
 {
 	static mlx_image_t	*player = NULL;

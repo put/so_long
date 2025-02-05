@@ -6,12 +6,20 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/05 15:29:17 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:52:00 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
+/**
+ * Floodfill algorithm that fills any reachable non-wall tile with '2'
+ * @param map - The map to fill
+ * @param start - The starting tile for the floodfill
+ * @param width - The width of the map
+ * @param height - The height of the map
+ * @return the filled map
+ */
 char	**floodfill(char **map, t_tile *start, int width, int height)
 {
 	t_list	*queue;
@@ -38,6 +46,11 @@ char	**floodfill(char **map, t_tile *start, int width, int height)
 	return (map);
 }
 
+/**
+ * Verifies that the map is solvable based on given flooded map
+ * @param map - The map to verify
+ * @return true if the map is solvable, false otherwise
+ */
 bool	floodsuccess(char **map)
 {
 	int	x;
@@ -58,7 +71,12 @@ bool	floodsuccess(char **map)
 	return (true);
 }
 
-// Verifies that the map is surrounded by walls
+/**
+ * Verifies that the map is surrounded by walls
+ * @param map - The map to verify
+ * @param width - The width of the map
+ * @return true if the map is surrounded by walls, false otherwise
+ */
 bool	verifywalls(char **map, int width)
 {
 	int	row;
@@ -86,7 +104,11 @@ bool	verifywalls(char **map, int width)
 	return (true);
 }
 
-// Verifies that the map has at least one collectible, one exit, and one player
+/**
+ * Verifies that the map has the correct amount of objects
+ * @param rawmap - The raw map string to verify
+ * @return 1 if the map is valid, otherwise an error code
+ */
 int	verifyobjects(char *rawmap)
 {
 	int	collectibles;
@@ -116,7 +138,12 @@ int	verifyobjects(char *rawmap)
 	return (1);
 }
 
-// Verifies that the map is rectangular
+/**
+ * Verifies that the map is rectangular
+ * @param rawmap - The raw map string to verify
+ * @param width - The width of the map
+ * @return true if the map is rectangular, false otherwise
+ */
 bool	verifyrect(char *rawmap, int width)
 {
 	int	len;
