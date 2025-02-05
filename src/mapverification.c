@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/04 15:41:01 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:29:17 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ bool	verifywalls(char **map, int width)
 	charindex = 0;
 	while (map[row])
 	{
-		if (row == 0 || !*(map + 1))
+		if (row == 0 || !map[row + 1])
 		{
 			while (map[row][charindex])
 			{
