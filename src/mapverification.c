@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:39:00 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/05 16:52:00 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:01:38 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,14 @@ int	verifyobjects(char *rawmap)
 {
 	int	collectibles;
 	int	exits;
-	int	player;
+	int	players;
+	int	other;
 	int	x;
 
 	collectibles = 0;
 	exits = 0;
-	player = 0;
+	players = 0;
+	other = 0;
 	x = 0;
 	while (rawmap[x++])
 	{
@@ -127,15 +129,12 @@ int	verifyobjects(char *rawmap)
 		else if (rawmap[x - 1] == MAP_EXIT)
 			exits++;
 		else if (rawmap[x - 1] == MAP_START)
-			player++;
+			players++;
+		else if (rawmap[x - 1] != MAP_EMPTY && rawmap[x - 1] != '\n'
+			&& rawmap[x - 1] != MAP_WALL)
+			other++;
 	}
-	if (collectibles <= 0)
-		return (-20);
-	if (exits != 1)
-		return (-21);
-	if (player != 1)
-		return (-22);
-	return (1);
+	return (getverificationreturnvalue(players, collectibles, exits, other));
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 22:50:16 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/05 16:54:02 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:02:57 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,7 @@ char	*get_map_err(int err)
 		return ("Map has invalid amount of exits");
 	if (err == -22)
 		return ("Map has invalid amount of players");
+	if (err == -23)
+		return ("Map has invalid objects");
 	return ("Unknown error");
 }

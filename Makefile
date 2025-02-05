@@ -14,7 +14,7 @@ LIBFT_VERSION = 3923c01
 HEADERS = -I$(MLX42_PATH)/include -I$(LIBFT_PATH)
 LIBS = $(MLX42_PATH)/build/libmlx42.a $(LIBFT_PATH)/libft.a -ldl -lglfw -pthread -lm
 
-SRCS = src/cleanup.c src/drawmanipimage.c src/errors.c src/floodfillhelpers.c src/gamelogic.c src/getsetimage.c src/getsetmap.c src/io.c src/locationhelpers.c src/main.c src/maphelpers.c src/mapverification.c
+SRCS = src/cleanup.c src/drawmanipimage.c src/errors.c src/floodfillhelpers.c src/gamelogic.c src/getsetimage.c src/getsetmap.c src/io.c src/locationhelpers.c src/main.c src/maphelpers.c src/mapverification.c src/moremapverification.c
 OBJS = $(SRCS:.c=.o)
 
 all: mlx42 libft $(NAME)

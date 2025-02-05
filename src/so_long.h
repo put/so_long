@@ -6,7 +6,7 @@
 /*   By: mschippe <mschippe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 01:01:06 by mschippe          #+#    #+#             */
-/*   Updated: 2025/02/05 16:53:37 by mschippe         ###   ########.fr       */
+/*   Updated: 2025/02/05 19:02:20 by mschippe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ bool				should_skip(char **map, t_tile p, int width, int height);
 t_tile				*maketile(int x, int y);
 int					add_all_to_queue(t_list **queue, t_tile *c);
 
-// floodfill.c
+// mapverification.c
 
 char				**floodfill(char **map, t_tile *start,
 						int width, int height);
@@ -113,6 +113,11 @@ bool				floodsuccess(char **map);
 bool				verifywalls(char **map, int width);
 bool				verifyrect(char *rawmap, int width);
 int					verifyobjects(char *rawmap);
+
+// moremapverification.c
+
+int					getverificationreturnvalue(int players, int collectibles,
+						int exits, int other);
 
 // maphelpers.c
 
