@@ -8,7 +8,7 @@ LIBFT_PATH = ./libft
 MLX42_REPO = https://github.com/codam-coding-college/MLX42.git
 MLX42_VERSION = ce254c3
 LIBFT_REPO = https://github.com/put/libft.git
-LIBFT_VERSION = 3923c01
+LIBFT_VERSION = e99f0e6
 
 # Headers and libraries
 HEADERS = -I$(MLX42_PATH)/include -I$(LIBFT_PATH)
